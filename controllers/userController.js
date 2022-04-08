@@ -126,6 +126,11 @@ const newPassword = async (req, res) => {
     return res.status(404).json({ msg: error.message });
   }
 };
+
+const profile = async (req, res) => {
+  const { user } = req
+  res.json(user)
+}
 export {
   register,
   authenticate,
@@ -133,4 +138,5 @@ export {
   forgotPassword,
   checkToken,
   newPassword,
+  profile
 };
