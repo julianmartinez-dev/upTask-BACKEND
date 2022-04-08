@@ -54,4 +54,24 @@ const authenticate = async (req, res) => {
   }
 };
 
-export { register, authenticate };
+const confirm = async (req, res) => {
+  const { token } = req.params;
+  const confirmUser = await User.findOne({ token });
+
+  if(!confirmUser){
+    const error = new Error('Token is invalid');
+    return res.status(404).json({ msg: error.message });
+  }
+
+  try {
+    confirmUser.confirmed = true;
+    confirmUser.token = '';
+    //Save the user
+    await confirmUser.save();
+    res.json({ msg: 'User confirmed' });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { register, authenticate, confirm };
