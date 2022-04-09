@@ -1,4 +1,5 @@
 import Project from '../models/Project.js';
+import Task from '../models/Task.js';
 
 //Get all projects
 const getProjects = async  (req, res) => {
@@ -18,6 +19,11 @@ const getProject = async (req, res) => {
     if(project.creator.toString() !== req.user._id.toString()){
         return res.status(401).json({msg: 'Not authorized'});
     }
+
+    //Get tasks for project
+    const tasks = await Task.find().where('project').equals(project._id)
+
+    res.json({project, tasks});
 };
 
 
@@ -84,8 +90,7 @@ const deleteProject = async (req, res) => {
 const addMember = (req, res) => {};
 //Delete member from project
 const deleteMember = (req, res) => {};
-//Get all tasks
-const getTasks = (req, res) => {};
+
 
 export {
   getProjects,
@@ -95,5 +100,4 @@ export {
   deleteProject,
   addMember,
   deleteMember,
-  getTasks,
 };

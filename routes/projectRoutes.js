@@ -8,7 +8,6 @@ import {
     deleteProject,
     addMember,
     deleteMember,
-    getTasks
 } from '../controllers/projectsController.js';
 
 import checkAuth from '../middleware/checkAuth.js';
@@ -24,7 +23,6 @@ router.route('/:id')
     .put(checkAuth, editProject)
     .delete(checkAuth, deleteProject);
 
-router.get('/tasks/:id', checkAuth, getTasks);
 router.post('/add-member/:id', checkAuth, addMember);
 router.post('/delete-member/:id', checkAuth, deleteMember);
 
