@@ -2,7 +2,7 @@ import { application } from 'express';
 import User from '../models/User.js';
 import generateID from '../helpers/generateID.js';
 import generateJWT from '../helpers/generateJWT.js';
-import {emailRegistry} from '../helpers/email.js';
+import {emailRegistry, emailResetPassword} from '../helpers/email.js';
 
 const register = async (req, res) => {
   //Check if user already exists
@@ -92,8 +92,14 @@ const forgotPassword = async (req, res) => {
   }
 
   try {
-    user.token = generateJWT(user._id);
+    user.token = generateID()
     await user.save();
+    //Send confirmation email
+    emailResetPassword({
+      email: user.email,
+      token: user.token,
+      name: user.name,
+    })
     res.json({ msg: 'Email with instructions sended' });
   } catch (error) {
     console.log(error);
@@ -124,7 +130,7 @@ const newPassword = async (req, res) => {
     user.token = '';
    try {
       await user.save();
-      res.json({ msg: 'Password changed' });
+      res.json({ msg: 'Password changed successfully' });
    } catch (error) {
      console.log(error)
    }
