@@ -2,6 +2,7 @@ import { application } from 'express';
 import User from '../models/User.js';
 import generateID from '../helpers/generateID.js';
 import generateJWT from '../helpers/generateJWT.js';
+import {emailRegistry} from '../helpers/email.js';
 
 const register = async (req, res) => {
   //Check if user already exists
@@ -16,8 +17,14 @@ const register = async (req, res) => {
   try {
     const user = new User(req.body);
     user.token = generateID();
-    const storedUser = await user.save();
-    res.json(storedUser);
+    await user.save();
+    //Send confirmation email
+    emailRegistry({
+      email: user.email,
+      token: user.token,
+      name: user.name,
+    });
+    res.json({msg: 'User created, check your email to confirm'});
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: error.message });
