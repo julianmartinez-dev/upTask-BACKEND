@@ -10,7 +10,7 @@ const getProjects = async  (req, res) => {
 //Get one project
 const getProject = async (req, res) => {
     const { id } = req.params;
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate('tasks')
     if(!project){
         const error = new Error('Project not found');
         return res.status(404).json({msg: error.message});
@@ -21,9 +21,10 @@ const getProject = async (req, res) => {
     }
 
     //Get tasks for project
-    const tasks = await Task.find().where('project').equals(project._id)
+    //const tasks = await Task.find().where('project').equals(project._id)
+    //res.json({project, tasks});
 
-    res.json({project, tasks});
+    res.json(project);
 };
 
 
