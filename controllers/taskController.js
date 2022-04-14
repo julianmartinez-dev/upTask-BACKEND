@@ -93,14 +93,42 @@ const deleteTask = async (req, res) => {
     }
     //Try to delete task
     try {
-        await task.deleteOne();
+        const project = await Project.findById(task.project)
+        project.tasks.pull(task._id)
+
+        await Promise.allSettled([
+          await project.save(),
+          await task.deleteOne(),
+        ]);
+        
         res.json({ msg: 'Task deleted' });
     } catch (error) {
         console.log(error)
     }
 }
 
-const updateStatus = async (req, res) => {}
+const updateStatus = async (req, res) => {
+  const { id } = req.params;
+  const task = await Task.findById(id).populate('project');
+  //Check if task exists
+  if (!task) {
+    const error = new Error('Task not found');
+    return res.status(404).json({ msg: error.message });
+  }
+  //Check if task creator is the same as the user
+  if (task.project.creator.toString() !== req.user._id.toString()  &&
+    !task.members.some(
+      (member) => member._id.toString() === req.user._id.toString()
+    )){
+    const error = new Error('Not authorized to delete this task');
+    return res.status(403).json({ msg: error.message });
+  }
+
+    //Update task
+    task.status = !task.status;
+    await task.save();
+    res.json(task);
+}
 
 export {
     addTask,

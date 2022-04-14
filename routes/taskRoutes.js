@@ -17,7 +17,7 @@ router.route('/:id')
     .put(checkAuth, updateTask)
     .delete(checkAuth, deleteTask)
 
-router.post('status/:id',checkAuth, updateStatus);
+router.post('/status/:id',checkAuth, updateStatus);
 
 
 export default router;
