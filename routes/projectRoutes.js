@@ -1,13 +1,14 @@
 import express from 'express';
 
 import {
-    getProjects,
-    getProject,
-    newProject,
-    editProject,
-    deleteProject,
-    addMember,
-    deleteMember,
+  getProjects,
+  getProject,
+  newProject,
+  editProject,
+  deleteProject,
+  searchMember,
+  addMember,
+  deleteMember,
 } from '../controllers/projectsController.js';
 
 import checkAuth from '../middleware/checkAuth.js';
@@ -23,7 +24,8 @@ router.route('/:id')
     .put(checkAuth, editProject)
     .delete(checkAuth, deleteProject);
 
-router.post('/add-member/:id', checkAuth, addMember);
-router.post('/delete-member/:id', checkAuth, deleteMember);
+router.post('/members', checkAuth, searchMember);
+router.post('/members/:id', checkAuth, addMember);
+router.delete('/members/:id', checkAuth, deleteMember);
 
 export default router;
